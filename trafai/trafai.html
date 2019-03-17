@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-------------Ajouter des br en js après chaque lettre, et ajouter les lettres dans l'ordre inverse, boucle et manipulation du dom-----
+    transformer le rendu en image ? https://www.npmjs.com/package/html-to-image ------------>
+    <style>
+        /* @font-face {
+            font-family: "fontFairunique";
+            src: url('fontFairunique.ttf');
+        } */
+
+        .container {
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            background-color: #032711;
+            color: white;
+            margin: 0 auto;
+        }
+
+        /* les lettres doivent s'afficher de bas en haut et de gauche à droite. */
+        .fairu {
+            display: flex;
+            flex-direction: column-reverse;
+            flex-wrap: wrap;
+            max-height: 150px;
+            align-content: flex-start;
+            font-family: "fontFairunique", Helvetica, Arial, sans-serif;
+            background-color: #0f1216;
+            color: white;
+            margin: 0 auto;
+        }
+
+        .fLetter {
+            padding: 5px;
+            transform: rotate(-90deg);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Trafai</h1>
+    <div id="affichage"></div>
+
+    <form action="">
+        <input type="text">
+        <button>Envoi</button>
+    </form>
+
+    <script>
+        "use strict"
+        //on sélectionne les éléments rentrés dans l'input
+        let inputFForm = document.querySelector('form');
+        inputFForm.addEventListener('submit', function (evt) {
+            evt.preventDefault();
+            let input = document.querySelector('input').value;
+            //            document.querySelector('input').value = "";
+            //on place chaque lettre dans un tableau
+            let fairu = document.createElement('div');
+            fairu.className = "fairu";
+
+            for (let letter of input) {
+                let divFairu = document.createElement('div');
+                divFairu.className = "fLetter";
+                divFairu.textContent = letter;
+                fairu.appendChild(divFairu);
+            };
+            affichage.appendChild(fairu);
+        });
+    </script>
+</body>
+
+</html>
