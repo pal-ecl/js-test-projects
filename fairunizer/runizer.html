@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="styles/runestyle.css">
+    <title>Runizer</title>
+
+
+</head>
+
+<body>
+
+    <div class="all-content">
+        <h1>The Runizer</h1>
+
+        <div class="inputForms">
+            <form id="inputText" action="">
+                <label>Text To convert:<br />
+                    <input type="text" id="toConvert" name="toConvert">
+                </label>
+                <br />
+                <button>Convert</button>
+            </form>
+            <div class="sizeForm">
+                <form id="convertSize" action="">
+                    <label>Size of the image :<br />
+                        Width in px :
+                        <input type="text" id="widthConversion" name="widthConversion">
+                        <br />
+                        Height in px :
+                        <input type="text" id="heightConversion" name="heightConversion">
+                        <br />
+                        <button>Resize</button>
+                    </label>
+                </form>
+            </div>
+        </div>
+        <div id="convertedText"></div>
+
+        <form id="genPng" action="">
+            <button>Validate</button>
+        </form>
+        <form id="deletePng" action="">
+            <button>Delete</button>
+        </form>
+        <div id="imageZone">
+        </div>
+
+    </div>
+
+    <script src="scripts/jspdf.min.js"></script>
+    <script src="scripts/fairunizer.js"></script>
+</body>
+
+</html>
