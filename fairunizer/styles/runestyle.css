@@ -59,13 +59,13 @@ button:hover {
     flex-wrap: wrap;
     align-content: center;
     font-family: "wingding", Helvetica, Arial, sans-serif;
-    background-color: #0f1216;
+    background-color: black;
     color: white;
     margin: 0 auto;
 }
 
 #imageZone {
-    background-color: #0f1216;
+    background-color: black;
     display: inline-block;
 }
 
