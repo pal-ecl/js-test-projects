@@ -1,7 +1,54 @@
-
 (function () {
 
-    //------------/view
+    //------------model
+    let model = (function () {
+
+        // store png and id
+        let images = [];
+
+        let promise;
+
+        let Png = function (id, img) {
+            this.id = id;
+            this.img = img;
+        }
+
+        return {
+            addPng: function (toCanvas) {
+                let pngToAdd;
+                //canvas creation
+                pngToAdd = html2canvas(toCanvas);
+                return pngToAdd;
+            },
+
+            storePng: function (newPng){
+                let newImage, Id;
+                if (images.length > 0) {
+                    Id = images[images.length - 1].id + 1;
+                } else {
+                    Id = 0;
+                }
+                newImage = new Png(Id, newPng);
+                images.push(newImage);
+                return Id;
+            },
+
+            deletePng: function (ID) {
+                let index;
+
+                index = images.reduce((imagesIndex, image, index) => (image.id == ID)
+                ? index
+                : imagesIndex, -1);
+
+                if (index !== -1) {
+                    images.splice(index, 1);
+                }
+            }
+        }
+
+    })();
+    //------------/model
+    //------------view
 
     let view = (function () {
 
@@ -14,13 +61,17 @@
             idConvertedText: '#convertedText',
             idDeletePng: '#deletePng',
             toDeleteImgs: 'canvas',
-            idConvertSize:'#convertSize',
+            idConvertSize: '#convertSize',
             idWidth: '#widthConversion',
             idHeight: '#heightConversion',
-            idGenPng: '#genPng'
+            idGenPng: '#genPng',
+            classPngImage: '.pngImage',
+            idImageZone: '#imageZone'
         }
 
         return {
+
+
 
             getDOMstrings: function () {
                 return DOMstrings;
@@ -43,7 +94,7 @@
             },
 
             clearInput: function () {
-                document.querySelector(DOMstrings.idToConvert).value="";
+                document.querySelector(DOMstrings.idToConvert).value = "";
             },
 
             clearConvertedLetters: function () {
@@ -55,7 +106,7 @@
 
             convertSize: function () {
                 let convertedLetters, toWidth, toHeight;
-                
+
                 convertedLetters = document.querySelector(DOMstrings.classConvertedLetters);
                 toWidth = document.querySelector(DOMstrings.idWidth).value;
                 toHeight = document.querySelector(DOMstrings.idHeight).value;
@@ -63,18 +114,22 @@
                     convertedLetters.style.width = toWidth + "px";
                     convertedLetters.style.height = toHeight + "px";
                 }
-            
+
                 convertedText.style.width = parseInt(toWidth, 10) + 5 + "px";
                 convertedText.style.height = parseInt(toHeight, 10) + 5 + "px";
             },
 
-            genPng: function () {
+            getToCanvas: function () {
+                return document.querySelector(DOMstrings.idConvertedText);
+            },
+
+            displayPng: function (pngToAdd, id) {
                 document.querySelector(DOMstrings.IdInputText).value = "";
-            
-                //canvas creation
-                html2canvas(document.querySelector(DOMstrings.idConvertedText)).then(canvas => {
-                    imageZone.appendChild(canvas)
-                });
+                let divPng = document.createElement('div');
+                divPng.className = 'pngImage';
+                divPng.id = id;
+                divPng.appendChild(pngToAdd);
+                imageZone.appendChild(divPng);               
             },
 
             deletePng: function () {
@@ -84,8 +139,15 @@
                         imageZone.removeChild(toDeleteImg);
                     });
                 }
+            },
+
+            deleteImage: function (id) {
+                let toDeletePng = document.getElementById(id);
+                if (toDeletePng) {
+                    imageZone.removeChild(toDeletePng);
+                }
             }
-            
+
 
 
         }
@@ -96,46 +158,62 @@
     //----------/view
 
     //----------controller
-    let controller = (function (view) {
-        
+    let controller = (function (model, view) {
+
 
         let setupEventListenners = function () {
             let DOM = view.getDOMstrings();
 
             document.querySelector(DOM.IdInputText).addEventListener('submit', ctrlConvertText);
 
-            document.querySelector(DOM.idToConvert).addEventListener('focus', function (evt){
+            document.querySelector(DOM.idToConvert).addEventListener('focus', function (evt) {
                 view.clearInput();
                 view.clearConvertedLetters();
 
             });
 
-            document.querySelector(DOM.idConvertSize).addEventListener('submit', function (evt){
+            document.querySelector(DOM.idConvertSize).addEventListener('submit', function (evt) {
                 evt.preventDefault();
                 view.convertSize();
             });
 
-            document.querySelector(DOM.idGenPng).addEventListener('submit', function (evt){
-                evt.preventDefault();
-                view.genPng();
-            });
-            
-            document.querySelector(DOM.idDeletePng).addEventListener('submit', function (evt){
+            document.querySelector(DOM.idGenPng).addEventListener('submit', ctrlAddPng);
+
+            document.querySelector(DOM.idImageZone).addEventListener('click', ctrlDeletePng);
+
+            document.querySelector(DOM.idDeletePng).addEventListener('submit', function (evt) {
                 evt.preventDefault();
                 view.deletePng();
             });
 
         };
-        
+
         //check if there is something to convert
         let ctrlConvertText = function (evt) {
             let DOM = view.getDOMstrings();
             evt.preventDefault();
-            if (document.querySelector(DOM.idToConvert).value){
+            if (document.querySelector(DOM.idToConvert).value) {
                 view.clearConvertedLetters();
-                view.createConversionText();              
+                view.createConversionText();
             }
         };
+
+        let ctrlAddPng = async function (evt) {
+            evt.preventDefault();
+            let toCanvas = view.getToCanvas();
+            let pngToAdd = await model.addPng(toCanvas);
+            let id = model.storePng(pngToAdd);
+            view.displayPng(pngToAdd, id);
+        };
+
+        let ctrlDeletePng = function (event) {
+            let imageId;
+            imageId = event.target.closest('.pngImage').id;
+            if (imageId) {
+                model.deletePng(imageId);
+                view.deleteImage(imageId);
+            }
+        }
 
         return {
             init: function () {
@@ -144,7 +222,7 @@
         };
 
 
-    })(view);
+    })(model, view);
     controller.init();
 
 })()
